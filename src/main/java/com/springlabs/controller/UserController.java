@@ -1,7 +1,9 @@
 package com.springlabs.controller;
 
 import com.springlabs.model.User;
+import com.springlabs.model.Info;
 import com.springlabs.service.UserService;
+import com.springlabs.service.InfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +17,27 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private InfoService infoService;
+
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Integer id) {
         return userService.findById(id)
-                .map(user -> ResponseEntity.ok().body(user))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public User createUser(@RequestBody User user) {
         return userService.save(user);
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User userDetails) {
         if (userDetails.getId() == null) {
             return ResponseEntity.badRequest().build();
@@ -41,9 +46,39 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteUser(@RequestBody User user) {
-        userService.delete(user.getId());
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
+        userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userId}/info/{infoId}")
+    public ResponseEntity<Void> addInfoToUser(@PathVariable Integer userId, @PathVariable Integer infoId) {
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Info info = infoService.findById(infoId)
+                .orElseThrow(() -> new RuntimeException("Info not found"));
+
+        user.getInfo().add(info);
+        info.getUsers().add(user);
+
+        userService.save(user);
+        infoService.save(info);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{userId}/info/{infoId}")
+    public ResponseEntity<Void> removeInfoFromUser(@PathVariable Integer userId, @PathVariable Integer infoId) {
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Info info = infoService.findById(infoId)
+                .orElseThrow(() -> new RuntimeException("Info not found"));
+
+        user.getInfo().remove(info);
+        info.getUsers().remove(user);
+
+        userService.save(user);
+        infoService.save(info);
         return ResponseEntity.noContent().build();
     }
 }

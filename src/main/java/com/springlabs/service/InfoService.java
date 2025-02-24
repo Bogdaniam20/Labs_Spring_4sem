@@ -31,7 +31,6 @@ public class InfoService {
     }
 
     public Info save(Info info) {
-        //info.setId(null);
         return infoRepository.save(info);
     }
 
@@ -45,7 +44,8 @@ public class InfoService {
         Info info = new Info();
         info.setEmails(emails);
         info.setPhones(phones);
-        info.setUser(user);
+        info.getUsers().add(user);
+        user.getInfo().add(info);
         return save(info);
     }
 
@@ -55,7 +55,7 @@ public class InfoService {
         Matcher emailMatcher = emailPattern.matcher(text);
 
         while (emailMatcher.find()) {
-            emails.append(emailMatcher.group()).append(", ");
+            emails.append(emailMatcher.group()).append(" ");
         }
 
         if (emails.length() > 0) {

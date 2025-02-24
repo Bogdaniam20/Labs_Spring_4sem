@@ -20,37 +20,44 @@ public class InfoController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/{userId}")
-    public Info createInfo( @PathVariable Integer userId,@RequestBody String request) {
+    @PostMapping("/create/{userId}")
+    public Info createInfo(@PathVariable Integer userId, @RequestBody String request) {
         User user = userService.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return infoService.GetText(request, user);
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     public List<Info> getAllInfo() {
         return infoService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<Info> getInfoById(@PathVariable Integer id) {
         return infoService.findById(id)
-                .map(info -> ResponseEntity.ok().body(info))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping
+    @PutMapping("/update")
     public ResponseEntity<Info> updateInfo(@RequestBody Info infoDetails) {
         if (infoDetails.getId() == null) {
-            return ResponseEntity.badRequest().build(); // Возвращаем ошибку, если ID не указан
+            return ResponseEntity.badRequest().build();
         }
         Info updatedInfo = infoService.update(infoDetails);
         return ResponseEntity.ok(updatedInfo);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> deleteInfo(@PathVariable Integer id) {
         infoService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Info> getInfoByUserId(@PathVariable Integer userId) {
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getInfo();
     }
 }
