@@ -1,6 +1,6 @@
 package com.springlabs.service;
 
-import com.springlabs.DAO.InfoDao;
+import com.springlabs.repository.dao.InfoDao;
 import com.springlabs.model.Info;
 import com.springlabs.model.User;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.springlabs.dao;
+package com.springlabs.repository.dao;
 
 import com.springlabs.model.Info;
 import com.springlabs.repository.InfoRepository;
