@@ -1,7 +1,7 @@
 package com.springlabs.service;
 
+import com.springlabs.DAO.UserDao;
 import com.springlabs.model.User;
-import com.springlabs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,29 +12,29 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDao userDao;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        return userDao.findAll();
     }
 
     public User save(User user) {
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     public Optional<User> findById(Integer id) {
-        return userRepository.findById(id);
+        return userDao.findById(id);
     }
 
     public User update(User userDetails) {
-        User user = userRepository.findById(userDetails.getId())
+        User user = userDao.findById(userDetails.getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setName(userDetails.getName());
         user.setSurname(userDetails.getSurname());
-        return userRepository.save(user);
+        return userDao.save(user);
     }
 
     public void delete(Integer id) {
-        userRepository.deleteById(id);
+        userDao.delete(id);
     }
 }

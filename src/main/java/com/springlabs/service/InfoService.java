@@ -1,41 +1,39 @@
 package com.springlabs.service;
 
-import com.springlabs.model.User;
-import com.springlabs.repository.InfoRepository;
+import com.springlabs.DAO.InfoDao;
 import com.springlabs.model.Info;
+import com.springlabs.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import lombok.Data;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Data
 @Service
 public class InfoService {
 
     @Autowired
-    private InfoRepository infoRepository;
+    private InfoDao infoDao;
 
     private static final String EMAIL_REGEX = "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})";
     private static final String PHONE_REGEX = "(\\+[0-9]{1,4}[-.\\s]?\\(?[0-9]{1,4}?\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9})";
 
     public List<Info> findAll() {
-        return infoRepository.findAll();
+        return infoDao.findAll();
     }
 
     public Optional<Info> findById(Integer id) {
-        return infoRepository.findById(id);
+        return infoDao.findById(id);
     }
 
     public Info save(Info info) {
-        return infoRepository.save(info);
+        return infoDao.save(info);
     }
 
     public void delete(Integer id) {
-        infoRepository.deleteById(id);
+        infoDao.delete(id);
     }
 
     public Info GetText(String text, User user) {
@@ -59,7 +57,7 @@ public class InfoService {
         }
 
         if (emails.length() > 0) {
-            emails.setLength(emails.length() - 2);
+            emails.setLength(emails.length() - 1); // Удаляем последний пробел
         }
 
         return emails.toString();
@@ -75,17 +73,17 @@ public class InfoService {
         }
 
         if (phones.length() > 0) {
-            phones.setLength(phones.length() - 2);
+            phones.setLength(phones.length() - 2); // Удаляем последние два символа ", "
         }
 
         return phones.toString();
     }
 
     public Info update(Info infoDetails) {
-        Info info = infoRepository.findById(infoDetails.getId())
+        Info info = infoDao.findById(infoDetails.getId())
                 .orElseThrow(() -> new RuntimeException("Info not found"));
         info.setEmails(infoDetails.getEmails());
         info.setPhones(infoDetails.getPhones());
-        return infoRepository.save(info);
+        return infoDao.save(info);
     }
 }
