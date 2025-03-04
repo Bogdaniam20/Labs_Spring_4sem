@@ -32,6 +32,12 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/search")
+    public List<User> getUsersByNameAndSurname(@RequestParam(required = false) String name,
+                                               @RequestParam(required = false) String surname) {
+        return userService.findByNameAndSurname(name, surname);
+    }
+
     @PostMapping("/create")
     public User createUser(@RequestBody User user) {
         return userService.save(user);

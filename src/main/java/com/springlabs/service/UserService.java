@@ -37,4 +37,16 @@ public class UserService {
     public void delete(Integer id) {
         userDao.delete(id);
     }
+
+    public List<User> findByNameAndSurname(String name, String surname) {
+        if (name != null && surname != null) {
+            return userDao.findByNameAndSurname(name, surname);
+        } else if (name != null) {
+            return userDao.findByName(name);
+        } else if (surname != null) {
+            return userDao.findBySurname(surname);
+        } else {
+            return userDao.findAll();
+        }
+    }
 }

@@ -57,7 +57,7 @@ public class InfoService {
         }
 
         if (emails.length() > 0) {
-            emails.setLength(emails.length() - 1); // Удаляем последний пробел
+            emails.setLength(emails.length() - 1);
         }
 
         return emails.toString();
@@ -73,7 +73,7 @@ public class InfoService {
         }
 
         if (phones.length() > 0) {
-            phones.setLength(phones.length() - 2); // Удаляем последние два символа ", "
+            phones.setLength(phones.length() - 2);
         }
 
         return phones.toString();

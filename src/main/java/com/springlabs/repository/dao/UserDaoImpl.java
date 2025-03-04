@@ -1,5 +1,6 @@
 package com.springlabs.repository.dao;
 
+import com.springlabs.cache.UserCache;
 import com.springlabs.model.User;
 import com.springlabs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +15,63 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserCache userCache;
+
     @Override
     public List<User> findAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        users.forEach(userCache::putUser);
+        return users;
     }
 
     @Override
     public Optional<User> findById(Integer id) {
-        return userRepository.findById(id);
+        User cachedUser = userCache.getUser(id);
+        if (cachedUser != null) {
+            return Optional.of(cachedUser);
+        }
+        Optional<User> user = userRepository.findById(id);
+        user.ifPresent(userCache::putUser);
+        return user;
     }
 
     @Override
     public User save(User user) {
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userCache.putUser(savedUser);
+        return savedUser;
     }
 
     @Override
     public void delete(Integer id) {
         userRepository.deleteById(id);
+        userCache.removeUser(id);
+    }
+    @Override
+    public List<User> findByNameAndSurname(String name, String surname) {
+        return userRepository.findByNameAndSurname(name, surname);
+    }
+
+    @Override
+    public List<User> findByName(String name) {
+        User cachedUser = userCache.getUserByName(name);
+        if (cachedUser != null) {
+            return List.of(cachedUser);
+        }
+        List<User> users = userRepository.findByName(name);
+        users.forEach(userCache::putUser);
+        return users;
+    }
+
+    @Override
+    public List<User> findBySurname(String surname) {
+        User cachedUser = userCache.getUserBySurname(surname);
+        if (cachedUser != null) {
+            return List.of(cachedUser);
+        }
+        List<User> users = userRepository.findBySurname(surname);
+        users.forEach(userCache::putUser);
+        return users;
     }
 }
