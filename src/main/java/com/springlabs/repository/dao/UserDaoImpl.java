@@ -48,6 +48,7 @@ public class UserDaoImpl implements UserDao {
         userRepository.deleteById(id);
         userCache.removeUser(id);
     }
+
     @Override
     public List<User> findByNameAndSurname(String name, String surname) {
         return userRepository.findByNameAndSurname(name, surname);
