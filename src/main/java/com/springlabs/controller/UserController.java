@@ -49,7 +49,6 @@ public class UserController {
         if (user == null || user.getName() == null || user.getSurname() == null) {
             throw new RuntimeException("Имя и фамилия пользователя не должны быть пустыми");
         }
-
         if (user.getInfo() != null) {
             for (Info info : user.getInfo()) {
                 infoService.save(info);

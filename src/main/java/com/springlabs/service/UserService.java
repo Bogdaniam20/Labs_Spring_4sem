@@ -1,5 +1,6 @@
 package com.springlabs.service;
 
+import com.springlabs.exceptions.UserNotFoundException;
 import com.springlabs.repository.dao.UserDao;
 import com.springlabs.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,10 @@ public class UserService {
     }
 
     public User save(User user) {
+
+        if (user.getName() == null || user.getSurname() == null) {
+            throw new IllegalArgumentException("Name and surname must not be null");
+        }
         return userDao.save(user);
     }
 
@@ -27,15 +32,25 @@ public class UserService {
     }
 
     public User update(User userDetails) {
+
         User user = userDao.findById(userDetails.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userDetails.getId()));
+
+
+        if (userDetails.getName() == null || userDetails.getSurname() == null) {
+            throw new IllegalArgumentException("Name and surname must not be null");
+        }
+
         user.setName(userDetails.getName());
         user.setSurname(userDetails.getSurname());
         return userDao.save(user);
     }
 
     public void delete(Integer id) {
-        userDao.delete(id);
+
+        User user = userDao.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+        userDao.delete(user.getId());
     }
 
     public List<User> findByNameAndSurname(String name, String surname) {

@@ -1,13 +1,10 @@
-package com.springlabs.controller;
+package com.springlabs.exceptions;
 
-import com.springlabs.exceptions.InfoNotFoundException;
-import com.springlabs.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@SuppressWarnings("ALL")
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,6 +20,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Произошла неожиданная ошибка: " + ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Произошла неожиданная ошибка: " + ex.getMessage());
     }
 }
