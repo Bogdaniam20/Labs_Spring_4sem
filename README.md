@@ -7,7 +7,7 @@
 **Вариант:** № 1  
 **ФИО:** Григоренко Б.С.  
 ---
-![](https://i.gifer.com/2A5.gif)<br>
+![](https://i.gifer.com/origin/b6/b63cd17bb3aedad7a15e39ec9c0dcce9_w200.webp)![](https://i.gifer.com/origin/77/77c9d6001ac7ee0ba6e4e313b41aa6dd_w200.webp)![](https://i.gifer.com/origin/2d/2d4adaf81d4a24d3da1a5c93834e56b9_w200.webp)![](https://i.gifer.com/origin/fd/fdf70f5f4989f9c08f033da50c38170e_w200.webp)![](https://i.gifer.com/origin/23/238a465012f48c55b9c96c351be7eadd_w200.webp)<br>
 ---
 
 ## Описание
@@ -33,8 +33,6 @@
 
 1. Реализован POST метод для работы со списком параметров для bulk операций с использованием Java 8 (Stream API, лямбда-выражения).
 2. Обеспечено покрытие юнит-тестами на более чем 80%.
-3. Добавлена обработка ошибок и логирование действий.
-4. Интегрирован **Swagger UI** для тестирования API.
 
 ---
 
