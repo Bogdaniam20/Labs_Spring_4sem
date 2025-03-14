@@ -10,6 +10,7 @@ public interface UserDao {
     Optional<User> findById(Integer id);
     User save(User user);
     void delete(Integer id);
+    List<User> saveAll(List<User> users);
 
     List<User> findByNameAndSurname(String name, String surname);
     List<User> findByName(String name);

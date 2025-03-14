@@ -22,4 +22,13 @@ public class Info {
 
     @ManyToMany(mappedBy = "info")
     private List<User> users = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Info{" +
+                "id=" + id +
+                ", emails='" + emails + '\'' +
+                ", phones='" + phones + '\'' +
+                '}';
+    }
 }

@@ -27,7 +27,6 @@ public class InfoController {
     public Info createInfo(@PathVariable Integer userId, @RequestBody Info info) {
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-
         info.setUsers(List.of(user));
         user.getInfo().add(info);
 

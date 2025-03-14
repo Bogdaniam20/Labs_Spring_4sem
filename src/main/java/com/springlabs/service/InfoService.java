@@ -2,14 +2,15 @@ package com.springlabs.service;
 
 import com.springlabs.repository.dao.InfoDao;
 import com.springlabs.model.Info;
-import com.springlabs.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class InfoService {
@@ -19,7 +20,7 @@ public class InfoService {
 
     private static final String EMAIL_REGEX = "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})";
     private static final String PHONE_REGEX =
-    "(\\+[0-9]{1,4}[-.\\s]?\\(?[0-9]{1,4}?\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9})";
+            "(\\+[0-9]{1,4}[-.\\s]?\\(?[0-9]{1,4}?\\)?[-.\\s]?[0-9]{1,4}[-.\\s]?[0-9]{1,9})";
 
     public List<Info> findAll() {
         return infoDao.findAll();
@@ -37,54 +38,31 @@ public class InfoService {
         infoDao.delete(id);
     }
 
-    public Info GetText(String text, User user) {
-        String emails = extractEmails(text);
-        String phones = extractPhones(text);
-        Info info = new Info();
-        info.setEmails(emails);
-        info.setPhones(phones);
-        info.getUsers().add(user);
-        user.getInfo().add(info);
-        return save(info);
+    public String extractEmails(String text) {
+        return extractWithRegex(text, EMAIL_REGEX);
     }
 
-    private String extractEmails(String text) {
-        StringBuilder emails = new StringBuilder();
-        Pattern emailPattern = Pattern.compile(EMAIL_REGEX);
-        Matcher emailMatcher = emailPattern.matcher(text);
-
-        while (emailMatcher.find()) {
-            emails.append(emailMatcher.group()).append(" ");
-        }
-
-        if (emails.length() > 0) {
-            emails.setLength(emails.length() - 1);
-        }
-
-        return emails.toString();
+    public String extractPhones(String text) {
+        return extractWithRegex(text, PHONE_REGEX);
     }
 
-    private String extractPhones(String text) {
-        StringBuilder phones = new StringBuilder();
-        Pattern phonePattern = Pattern.compile(PHONE_REGEX);
-        Matcher phoneMatcher = phonePattern.matcher(text);
+    private String extractWithRegex(String text, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
 
-        while (phoneMatcher.find()) {
-            phones.append(phoneMatcher.group()).append(", ");
-        }
-
-        if (phones.length() > 0) {
-            phones.setLength(phones.length() - 2);
-        }
-
-        return phones.toString();
+        return matcher.results()
+                .map(MatchResult::group)
+                .collect(Collectors.joining(regex.equals(EMAIL_REGEX) ? " " : ", "));
     }
 
     public Info update(Info infoDetails) {
-        Info info = infoDao.findById(infoDetails.getId())
-                .orElseThrow(() -> new RuntimeException("Info not found"));
-        info.setEmails(infoDetails.getEmails());
-        info.setPhones(infoDetails.getPhones());
-        return infoDao.save(info);
+        return infoDao.findById(infoDetails.getId())
+                .map(existingInfo -> {
+                    existingInfo.setEmails(infoDetails.getEmails());
+                    existingInfo.setPhones(infoDetails.getPhones());
+                    return infoDao.save(existingInfo);
+                })
+                .orElseThrow(() -> new RuntimeException("Информация по айди:" +
+                        " " + infoDetails.getId() + " не найдена"));
     }
 }

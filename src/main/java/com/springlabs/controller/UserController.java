@@ -44,6 +44,27 @@ public class UserController {
         return users;
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<List<User>> createUsers(@RequestBody List<User> users) {
+        if (users == null || users.isEmpty()) {
+            throw new RuntimeException("Список пользователей не должен быть пустым");
+        }
+
+        for (User user : users) {
+            if (user.getName() == null || user.getSurname() == null) {
+                throw new RuntimeException("Имя и фамилия пользователя не должны быть пустыми");
+            }
+            if (user.getInfo() != null) {
+                for (Info info : user.getInfo()) {
+                    infoService.save(info);
+                }
+            }
+        }
+
+        List<User> savedUsers = userService.saveAll(users);
+        return ResponseEntity.ok(savedUsers);
+    }
+
     @PostMapping("/create")
     public User createUser(@RequestBody User user) {
         if (user == null || user.getName() == null || user.getSurname() == null) {

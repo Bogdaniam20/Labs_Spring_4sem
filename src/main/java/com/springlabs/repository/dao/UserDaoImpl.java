@@ -26,6 +26,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public List<User> saveAll(List<User> users) {
+        if (users == null || users.isEmpty()) {
+            throw new IllegalArgumentException("Список пользователей не должен быть пустым");
+        }
+        List<User> savedUsers = userRepository.saveAll(users);
+        savedUsers.forEach(userCache::putUser);
+
+        return savedUsers;
+    }
+
+
+    @Override
     public Optional<User> findById(Integer id) {
         User cachedUser = userCache.getUser(id);
         if (cachedUser != null) {
