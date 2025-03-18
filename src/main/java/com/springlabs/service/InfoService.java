@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class InfoService {
 
-    InfoService infoService = new InfoService();
 
     @Autowired
     private InfoDao infoDao;
@@ -41,11 +40,12 @@ public class InfoService {
     }
 
     public String extractEmails(String text) {
-        return infoService.extractWithRegex(text, EMAIL_REGEX);
+
+        return this.extractWithRegex(text, EMAIL_REGEX);
     }
 
     public String extractPhones(String text) {
-        return infoService.extractWithRegex(text, PHONE_REGEX);
+        return this.extractWithRegex(text, PHONE_REGEX);
     }
 
     private String extractWithRegex(String text, String regex) {
