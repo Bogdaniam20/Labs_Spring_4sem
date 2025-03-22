@@ -18,9 +18,14 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RequestCounter requestCounter;
+
     public List<User> findAll() {
+        requestCounter.increment();
         try {
             log.info("Попытка получить всех пользователей");
+            log.info("Количество вызовов этого метода: " + requestCounter.getCount());
             return userDao.findAll();
         } catch (Exception e) {
             log.error("Ошибка при получении пользователей: {}", e.getMessage(), e);
@@ -29,6 +34,7 @@ public class UserService {
     }
 
     public User save(User user) {
+        requestCounter.increment();
         if (user.getName() == null || user.getSurname() == null) {
             throw new IllegalArgumentException("Имя и фамилия пользователя не должны быть пустыми");
         }
@@ -37,11 +43,13 @@ public class UserService {
     }
 
     public Optional<User> findById(Integer id) {
+        requestCounter.increment();
         log.info("Попытка найти пользователя по ID: {}", id);
         return userDao.findById(id);
     }
 
     public User update(User userDetails) {
+        requestCounter.increment();
         log.info("Попытка обновить пользователя с ID: {}", userDetails.getId());
         return userDao.findById(userDetails.getId())
                 .map(existingUser -> {
@@ -56,6 +64,7 @@ public class UserService {
     }
 
     public List<User> saveAll(List<User> users) {
+        requestCounter.increment();
         if (users == null || users.isEmpty()) {
             throw new IllegalArgumentException("Список пользователей не должен быть пустым");
         }
@@ -72,6 +81,7 @@ public class UserService {
     }
 
     public void delete(Integer id) {
+        requestCounter.increment();
         log.info("Попытка удалить пользователя с ID: {}", id);
         userDao.findById(id)
                 .ifPresentOrElse(
@@ -83,6 +93,7 @@ public class UserService {
     }
 
     public List<User> findByNameAndSurname(String name, String surname) {
+        requestCounter.increment();
         log.info("Поиск пользователей по имени: {} и фамилии: {}", name, surname);
         return userDao.findAll().stream()
                 .filter(user -> (name == null || user.getName().equals(name)))
