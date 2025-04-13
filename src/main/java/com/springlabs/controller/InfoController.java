@@ -25,15 +25,18 @@ public class InfoController {
 
     @PostMapping("/create/{userId}")
     public Info createInfo(@PathVariable Integer userId, @RequestBody Info info) {
+        // Получаем пользователя и убеждаемся, что он существует
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+
         info.setUsers(List.of(user));
         user.getInfo().add(info);
 
-        infoService.save(info);
+        Info savedInfo = infoService.save(info);
+
         userService.save(user);
 
-        return info;
+        return savedInfo;
     }
 
     @GetMapping("/getAll")

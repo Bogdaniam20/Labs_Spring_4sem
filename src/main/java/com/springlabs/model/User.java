@@ -23,11 +23,9 @@
         private String surname;
 
         @ManyToMany
-        @JoinTable(
-                name = "user_info",
+        @JoinTable(name = "user_info",
                 joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "info_id")
-        )
+                inverseJoinColumns = @JoinColumn(name = "info_id"))
         private List<Info> info = new ArrayList<>();
 
         @Override

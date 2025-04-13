@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin(origins = "http://localhost:8080")
 public class UserController {
 
     @Autowired
@@ -24,7 +25,6 @@ public class UserController {
 
     @GetMapping("/getAll")
     public List<User> getAll() {
-
         return userService.findAll();
     }
 
