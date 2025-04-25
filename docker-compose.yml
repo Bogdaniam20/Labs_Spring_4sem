@@ -1,27 +1,18 @@
-version: '3.8'
-
-volumes:
-  Labwork:
-
 services:
   app:
-    restart: always
-    build: .
+    image: prod-service:local
+    container_name: ps-app
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/Lab'
     depends_on:
-      - db
+      - postgresql
 
-  db:
-    image: postgres
-    restart: always
+  postgresql:
+    image: postgres:15
+    container_name: ps-psql
     environment:
-      POSTGRES_DB: Lab
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      - POSTGRES_DB=Lab
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
     volumes:
-      - Labwork:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - ./data:/var/lib/postgresql/data
