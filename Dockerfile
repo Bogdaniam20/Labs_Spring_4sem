@@ -1,21 +1,9 @@
-FROM maven:3.8.6-eclipse-temurin-17 as builder
-
+FROM eclipse-temurin:17-jdk as builder
 WORKDIR /app
+COPY . .
+RUN ./mvnw package -DskipTests
 
-COPY pom.xml .
-
-RUN mvn dependency:go-offline
-
-COPY src src
-
-RUN mvn package -DskipTests
-
-FROM eclipse-temurin:17-jre-jammy
-
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-
 COPY --from=builder /app/target/*.jar app.jar
-
-EXPOSE 8081
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["sh", "-c", "while ! nc -z $DB_HOST 5432; do sleep 2; done && java -Dserver.port=${PORT:-8080} -jar app.jar"]
