@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
+    image: postgres:15
     restart: always
     environment:
       POSTGRES_DB: railway
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: YHVsDPHTmsbICDpxwwMxrJYVCJjQxCRG
+      POSTGRES_PASSWORD: "YHVsDPHTmsbICDpxwwMxrJYVCJjQxCRG"
     ports:
       - "5432:5432"
     volumes:
