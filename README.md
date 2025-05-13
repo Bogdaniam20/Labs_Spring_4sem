@@ -36,7 +36,6 @@
 - **Spring Boot**
 - **Docker**
 - **Railway**
-- **Maven**
 
 ---
 
