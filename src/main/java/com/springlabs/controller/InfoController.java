@@ -25,7 +25,6 @@ public class InfoController {
 
     @PostMapping("/create/{userId}")
     public Info createInfo(@PathVariable Integer userId, @RequestBody Info info) {
-        // Получаем пользователя и убеждаемся, что он существует
         User user = userService.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
 
@@ -85,3 +84,4 @@ public class InfoController {
         return infoList;
     }
 }
+//123
